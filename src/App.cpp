@@ -1,5 +1,5 @@
-#include "Header Files/App.h"
-#include "Header Files/WindowThrowMacros.h"
+#include "App.h"
+#include "WindowThrowMacros.h"
 #include <sstream>
 
 App::App() : wnd(800, 600, "Feature Engine") {}

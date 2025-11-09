@@ -1,5 +1,5 @@
-#include "Header Files/Mouse.h"
-#include "Header Files/FeatureWin.h"
+#include "Mouse.h"
+#include "FeatureWin.h"
 
 std::pair<int, int> Mouse::GetPos() const noexcept { return {x, y}; }
 

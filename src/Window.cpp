@@ -1,5 +1,5 @@
-#include "Header Files/Window.h"
-#include "Header Files/WindowThrowMacros.h"
+#include "Window.h"
+#include "WindowThrowMacros.h"
 #include <sstream>
 
 Window::WindowClass Window::WindowClass::wndClass;

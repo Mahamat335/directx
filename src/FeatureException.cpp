@@ -1,4 +1,4 @@
-#include "Header Files/FeatureException.h"
+#include "FeatureException.h"
 #include <sstream>
 
 FeatureException::FeatureException(int line, const char *file) noexcept
