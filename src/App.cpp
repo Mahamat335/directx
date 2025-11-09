@@ -18,8 +18,7 @@ int App::Go() {
 }
 
 void App::DoFrame() {
-  const float t = timer.Peek();
-  std::ostringstream oss;
-  oss << "Feature Engine - " << t << " FPS";
-  wnd.SetTitle(oss.str());
+  const float t = sin(timer.Peek()) / 2.0f + 0.5f;
+  wnd.Gfx().ClearBuffer(t, t, 1.0f);
+  wnd.Gfx().EndFrame();
 }

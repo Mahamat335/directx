@@ -43,6 +43,8 @@ Window::Window(int width, int height, const char *name) {
                         nullptr, nullptr, WindowClass::GetInstance(), this);
 
   ShowWindow(hWnd, SW_SHOWDEFAULT);
+  // create graphics object
+  pGfx = std::make_unique<Graphics>(hWnd);
 }
 
 Window::~Window() { DestroyWindow(hWnd); }
@@ -148,3 +150,5 @@ std::optional<int> Window::ProcessMessages() {
   }
   return {};
 }
+
+Graphics &Window::Gfx() { return *pGfx; }

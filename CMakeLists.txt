@@ -27,4 +27,4 @@ add_executable(app WIN32 ${SOURCES})
 
 # Link the required Windows libraries to our executable.
 # This replaces the old -luser32 linker flag.
-target_link_libraries(app PRIVATE user32)
+target_link_libraries(app PRIVATE user32 d3d11)

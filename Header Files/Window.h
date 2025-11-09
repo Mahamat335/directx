@@ -1,6 +1,8 @@
 #pragma once
 #include "FeatureException.h"
 #include "FeatureWin.h"
+#include <Graphics.h>
+#include <memory>
 #include <optional>
 
 class Window {
@@ -51,6 +53,7 @@ public:
   Window &operator=(const Window &) = delete;
   void SetTitle(const std::string &title);
   static std::optional<int> ProcessMessages();
+  Graphics &Gfx();
 
 private:
   static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam,
@@ -63,4 +66,5 @@ private:
   int width;
   int height;
   HWND hWnd;
+  std::unique_ptr<Graphics> pGfx;
 };
