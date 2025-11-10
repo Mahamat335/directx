@@ -21,10 +21,14 @@ include_directories("Header Files")
 # This replaces the old `for /R` loop from the batch script.
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
+set_source_files_properties("src/dxerr.cpp" PROPERTIES
+    COMPILE_FLAGS "-Wno-c++11-narrowing"
+)
+
 # Create an executable named "app" (which will become app.exe on Windows)
 # using the `SOURCES` list we just populated.
 add_executable(app WIN32 ${SOURCES})
 
 # Link the required Windows libraries to our executable.
 # This replaces the old -luser32 linker flag.
-target_link_libraries(app PRIVATE user32 d3d11)
+target_link_libraries(app PRIVATE user32 d3d11 dxguid)

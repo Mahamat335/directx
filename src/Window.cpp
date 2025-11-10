@@ -151,4 +151,9 @@ std::optional<int> Window::ProcessMessages() {
   return {};
 }
 
-Graphics &Window::Gfx() { return *pGfx; }
+Graphics &Window::Gfx() {
+  if (!pGfx) {
+    throw CHWND_NOGFX_EXCEPT();
+  }
+  return *pGfx;
+}
