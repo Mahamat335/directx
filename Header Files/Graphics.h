@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include <vector>
 #include <wrl.h>
+#include <wrl/client.h>
 
 class Graphics {
 public:
@@ -54,6 +55,7 @@ public:
   ~Graphics() = default;
   void EndFrame();
   void ClearBuffer(float r, float g, float b) noexcept;
+  void DrawTestTriangle();
 
 private:
 #ifndef NDEBUG
