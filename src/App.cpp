@@ -23,13 +23,14 @@ void App::DoFrame() {
   wnd.Gfx().ClearBuffer(t, t, 1.0f);
   wnd.Gfx().DrawTestTriangle(timer.Peek(), wnd.mouse.GetPosX() / 400.0f - 1.0f,
                              -wnd.mouse.GetPosY() / 300.0f + 1.0f);
+  wnd.Gfx().DrawTestTriangle(timer.Peek(), 0.0f, 0.0f);
 
   // imgui
   ImGui_ImplDX11_NewFrame();
   ImGui_ImplWin32_NewFrame();
   ImGui::NewFrame();
 
-  static bool show_demo_window = true;
+  static bool show_demo_window = false;
 
   if (show_demo_window) {
     ImGui::ShowDemoWindow(&show_demo_window);
