@@ -1,0 +1,25 @@
+---
+# Base style
+BasedOnStyle: LLVM
+
+# Indentation size
+IndentWidth: 4
+
+# Braces on new line (İstediğin parantez stili: Allman)
+BreakBeforeBraces: Allman
+
+# Column limit (Matrislerin tek satıra sıkışmaması için 0 veya yüksek bir değer)
+ColumnLimit: 100
+
+# Matris ve dizilerdeki hizalamayı korumaya yardımcı olur
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+
+# Bazı kısa fonksiyonları tek satıra toplamasını engeller
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+
+# Pointer hizalaması (float* pVertexBuffer vs float *pVertexBuffer)
+PointerAlignment: Left
+---

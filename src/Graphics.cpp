@@ -200,9 +200,15 @@ void Graphics::DrawTestTriangle(float angle) {
   pContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride,
                                &offset);
   // create index buffer
+  // clang-format off
   const unsigned short indices[] = {
-      0, 1, 2, 0, 2, 3, 0, 4, 1, 2, 1, 5,
+      0, 1, 2,
+      0, 2, 3,
+      0, 4, 1,
+      2, 1, 5,
   };
+  // clang-format on
+
   wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
   D3D11_BUFFER_DESC ibd = {};
   ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -224,24 +230,18 @@ void Graphics::DrawTestTriangle(float angle) {
       float elemet[4][4];
     } transformation;
   };
+
+  // clang-format off
+  // NOLINTBEGIN
   const ConstantBuffer cb = {{
-      (3.0f / 4.0f) * std::cos(angle),
-      std::sin(angle),
-      0.0f,
-      0.0f,
-      (3.0f / 4.0f) * -std::sin(angle),
-      std::cos(angle),
-      0.0f,
-      0.0f,
-      0.0f,
-      0.0f,
-      1.0f,
-      0.0f,
-      0.0f,
-      0.0f,
-      0.0f,
-      1.0f,
+    (3.0f / 4.0f) * std::cos(angle),  std::sin(angle),   0.0f,        0.0f,
+    (3.0f / 4.0f) * -std::sin(angle), std::cos(angle),   0.0f,        0.0f,
+    0.0f,                                 0.0f,             1.0f,      0.0f, 
+    0.0f,                                 0.0f,             0.0f,      1.0f,
   }};
+  // NOLINTEND
+  // clang-format on
+
   wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
   D3D11_BUFFER_DESC cbd;
   cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
