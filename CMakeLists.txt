@@ -15,9 +15,18 @@ include_directories("Header Files")
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # Specific compiler flags for dxerr
-set_source_files_properties("src/dxerr.cpp" PROPERTIES
+set_source_files_properties("src/dxerr.cpp" "imgui/imgui_impl_dx11.cpp" PROPERTIES
     COMPILE_FLAGS "-Wno-c++11-narrowing"
 )
+
+# 1. ImGui klasöründeki tüm .cpp dosyalarını bul
+file(GLOB IMGUI_SOURCES "imgui/*.cpp")
+
+# 2. ImGui başlık dosyalarının (.h) bulunabilmesi için klasörü tanıt
+include_directories("imgui")
+
+# 3. Bu dosyaları ana kaynak listesine (SOURCES) dahil et
+list(APPEND SOURCES ${IMGUI_SOURCES})
 
 # Create the executable
 add_executable(app WIN32 ${SOURCES})

@@ -1,5 +1,6 @@
 #pragma once
 #include "FeatureTimer.h"
+#include "ImguiManager.h"
 #include "Window.h"
 
 class App {
@@ -12,6 +13,7 @@ private:
   void DoFrame();
 
 private:
+  ImguiManager imgui;
   Window wnd;
   FeatureTimer timer;
 };

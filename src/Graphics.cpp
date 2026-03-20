@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "GraphicsThrowMacros.h"
 #include "dxerr.h"
+#include "imgui_impl_dx11.h"
 #include <DirectXMath.h>
 #include <GraphicsThrowMacros.h>
 #include <d3d11.h>
@@ -54,6 +55,9 @@ Graphics::Graphics(HWND hwnd) {
   GFX_THROW_INFO(pSwap->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
   GFX_THROW_INFO(
       pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pTarget));
+
+  // init imgui
+  ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 }
 
 void Graphics::EndFrame() {

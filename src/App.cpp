@@ -1,6 +1,7 @@
 #include "App.h"
-#include "WindowThrowMacros.h"
-#include <sstream>
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 App::App() : wnd(800, 600, "Feature Engine") {}
 
@@ -22,5 +23,21 @@ void App::DoFrame() {
   wnd.Gfx().ClearBuffer(t, t, 1.0f);
   wnd.Gfx().DrawTestTriangle(timer.Peek(), wnd.mouse.GetPosX() / 400.0f - 1.0f,
                              -wnd.mouse.GetPosY() / 300.0f + 1.0f);
+
+  // imgui
+  ImGui_ImplDX11_NewFrame();
+  ImGui_ImplWin32_NewFrame();
+  ImGui::NewFrame();
+
+  static bool show_demo_window = true;
+
+  if (show_demo_window) {
+    ImGui::ShowDemoWindow(&show_demo_window);
+  }
+
+  ImGui::Render();
+  ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+  // present
   wnd.Gfx().EndFrame();
 }
