@@ -1,94 +1,86 @@
 cmake_minimum_required(VERSION 3.10)
-
 project(FeatureEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Generate compile_commands.json for Clangd/Intellisense
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Include directories
-include_directories("Header Files")
-
-# Find all source files
+# ==============================================================================
+# 1. TÜM SOURCE (.cpp) DOSYALARINI REKÜRSİF BUL
+# ==============================================================================
+# GLOB_RECURSE src içindeki tüm alt klasörleri tarar
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-# Specific compiler flags for dxerr
+# ImGui dosyalarını ekle
+file(GLOB IMGUI_SOURCES "imgui/*.cpp")
+list(APPEND SOURCES ${IMGUI_SOURCES})
+
+# ==============================================================================
+# 2. TÜM HEADER (.h) KLASÖRLERİNİ OTOMATİK BUL VE EKLE
+# ==============================================================================
+# Tüm .h dosyalarını bulup bulundukları klasörleri bir listeye ekliyoruz
+file(GLOB_RECURSE ALL_HEADERS "Header Files/*.h" "Header Files/*.hpp")
+set(HEADER_DIRS "")
+foreach(HEADER_PATH ${ALL_HEADERS})
+    get_filename_component(HEADER_DIR ${HEADER_PATH} DIRECTORY)
+    list(APPEND HEADER_DIRS ${HEADER_DIR})
+endforeach()
+list(REMOVE_DUPLICATES HEADER_DIRS) # Aynı klasörden birden fazla header varsa temizle
+
+# Bulunan tüm alt klasörleri include listesine ekle
+include_directories("Header Files") # Ana dizin
+include_directories(${HEADER_DIRS})  # Tüm alt dizinler
+include_directories("imgui")
+
+# ==============================================================================
+# 3. EXECUTABLE OLUŞTURMA VE LİNKLEME
+# ==============================================================================
+add_executable(app WIN32 ${SOURCES})
+
+# Özel compiler flagları
 set_source_files_properties("src/dxerr.cpp" "imgui/imgui_impl_dx11.cpp" PROPERTIES
     COMPILE_FLAGS "-Wno-c++11-narrowing"
 )
 
-# 1. ImGui klasöründeki tüm .cpp dosyalarını bul
-file(GLOB IMGUI_SOURCES "imgui/*.cpp")
-
-# 2. ImGui başlık dosyalarının (.h) bulunabilmesi için klasörü tanıt
-include_directories("imgui")
-
-# 3. Bu dosyaları ana kaynak listesine (SOURCES) dahil et
-list(APPEND SOURCES ${IMGUI_SOURCES})
-
-# Create the executable
-add_executable(app WIN32 ${SOURCES})
-
-# Link libraries
 target_link_libraries(app PRIVATE user32 d3d11 dxguid d3dcompiler)
 
 # ==============================================================================
-# AUTOMATIC SHADER COMPILATION LOGIC
+# 4. OTOMATİK SHADER COMPILATION (REKÜRSİF)
 # ==============================================================================
-
-# 1. Find the FXC shader compiler in Windows SDK
 find_program(FXC_EXECUTABLE fxc PATHS 
     "C:/Program Files (x86)/Windows Kits/10/bin/*/x64"
     "C:/Program Files (x86)/Windows Kits/8.1/bin/x64"
 )
 
-if(NOT FXC_EXECUTABLE)
-    message(FATAL_ERROR "fxc.exe not found. Please ensure Windows SDK is installed.")
-endif()
-
-# 2. Gather all HLSL files from the Shader directory
-file(GLOB SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Shader/*.hlsl")
+# Burada da GLOB_RECURSE kullanarak alt klasörlerdeki shaderları buluyoruz
+file(GLOB_RECURSE SHADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Shader/*.hlsl")
 
 set(COMPILED_CSO_FILES "")
-
 foreach(SHADER_PATH ${SHADER_SOURCES})
-    # Get the filename without extension (e.g., VertexShader)
     get_filename_component(SHADER_NAME ${SHADER_PATH} NAME_WE)
-    
-    # Define the output path (Place it in the same directory as the executable)
     set(OUTPUT_CSO "${CMAKE_CURRENT_BINARY_DIR}/${SHADER_NAME}.cso")
 
-    # Determine Shader Profile based on filename
-    # If filename contains 'Vertex', use vs_5_0. If 'Pixel', use ps_5_0.
     if(${SHADER_NAME} MATCHES "Vertex")
         set(TARGET_PROFILE "vs_5_0")
     elseif(${SHADER_NAME} MATCHES "Pixel")
         set(TARGET_PROFILE "ps_5_0")
     else()
-        # Fallback/Default profile
         set(TARGET_PROFILE "vs_5_0")
     endif()
 
-    # 3. Create a custom command to compile the shader
     add_custom_command(
         OUTPUT ${OUTPUT_CSO}
         COMMAND ${FXC_EXECUTABLE} /T ${TARGET_PROFILE} /Fo "${OUTPUT_CSO}" "${SHADER_PATH}"
         DEPENDS "${SHADER_PATH}"
-        COMMENT "Compiling HLSL: ${SHADER_PATH} -> ${OUTPUT_CSO} (${TARGET_PROFILE})"
+        COMMENT "Compiling HLSL: ${SHADER_PATH} -> ${OUTPUT_CSO}"
     )
-
     list(APPEND COMPILED_CSO_FILES ${OUTPUT_CSO})
 endforeach()
 
-# 4. Create a custom target for the shaders and make the app depend on it
 add_custom_target(CompileShaders ALL DEPENDS ${COMPILED_CSO_FILES})
 add_dependencies(app CompileShaders)
 
-# ==============================================================================
-
-# Copy Resources directory to build folder
+# Resources kopyalama
 add_custom_command(TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/Resources
