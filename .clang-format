@@ -1,25 +1,20 @@
 ---
-# Base style
-BasedOnStyle: LLVM
-
-# Indentation size
-IndentWidth: 4
-
-# Braces on new line (İstediğin parantez stili: Allman)
+Language: Cpp
+# Allman stilini (parantez alt satıra) doğrudan aktif eder
 BreakBeforeBraces: Allman
 
-# Column limit (Matrislerin tek satıra sıkışmaması için 0 veya yüksek bir değer)
-ColumnLimit: 100
+# Girinti (Indent) ayarları
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
 
-# Matris ve dizilerdeki hizalamayı korumaya yardımcı olur
-AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Right
-
-# Bazı kısa fonksiyonları tek satıra toplamasını engeller
-AllowShortFunctionsOnASingleLine: None
+# Sıkıştırmaları tamamen kapat (Tek satıra indirmeyi engeller)
 AllowShortBlocksOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortStructsOnASingleLine: false
 
-# Pointer hizalaması (float* pVertexBuffer vs float *pVertexBuffer)
-PointerAlignment: Left
+# Matrislerin bozulmaması için sınır
+ColumnLimit: 100
 ---

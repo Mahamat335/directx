@@ -77,6 +77,38 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam,
   case WM_CLOSE:
     PostQuitMessage(0);
     return 0;
+  // --- Mouse messages ---
+  case WM_MOUSEMOVE: {
+    const POINTS pt = MAKEPOINTS(lParam);
+    mouse.OnMouseMove(pt.x, pt.y);
+    return 0;
+  }
+  case WM_LBUTTONDOWN: {
+    const POINTS pt = MAKEPOINTS(lParam);
+    mouse.OnLeftPressed(pt.x, pt.y);
+    return 0;
+  }
+  case WM_LBUTTONUP: {
+    const POINTS pt = MAKEPOINTS(lParam);
+    mouse.OnLeftReleased(pt.x, pt.y);
+    return 0;
+  }
+  case WM_RBUTTONDOWN: {
+    const POINTS pt = MAKEPOINTS(lParam);
+    mouse.OnRightPressed(pt.x, pt.y);
+    return 0;
+  }
+  case WM_RBUTTONUP: {
+    const POINTS pt = MAKEPOINTS(lParam);
+    mouse.OnRightReleased(pt.x, pt.y);
+    return 0;
+  }
+  case WM_MOUSEWHEEL: {
+    const POINTS pt = MAKEPOINTS(lParam);
+    const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+    mouse.OnWheelDelta(pt.x, pt.y, delta);
+    return 0;
+  }
   }
 
   return DefWindowProc(hWnd, msg, wParam, lParam);

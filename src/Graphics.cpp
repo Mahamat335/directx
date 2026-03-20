@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "GraphicsThrowMacros.h"
 #include "dxerr.h"
+#include <DirectXMath.h>
 #include <GraphicsThrowMacros.h>
 #include <d3d11.h>
 #include <d3dcommon.h>
@@ -12,6 +13,7 @@
 #include <wrl/client.h>
 
 namespace wrl = Microsoft::WRL;
+namespace dx = DirectX;
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -159,7 +161,7 @@ std::string Graphics::InfoException::GetErrorInfo() const noexcept {
   return info;
 }
 
-void Graphics::DrawTestTriangle(float angle) {
+void Graphics::DrawTestTriangle(float angle, float x, float y) {
   HRESULT hr;
 
   struct Vertex {
@@ -226,21 +228,13 @@ void Graphics::DrawTestTriangle(float angle) {
 
   // create constant buffer for transformation matrix
   struct ConstantBuffer {
-    struct {
-      float elemet[4][4];
-    } transformation;
+    dx::XMMATRIX transform;
   };
 
-  // clang-format off
-  // NOLINTBEGIN
-  const ConstantBuffer cb = {{
-    (3.0f / 4.0f) * std::cos(angle),  std::sin(angle),   0.0f,        0.0f,
-    (3.0f / 4.0f) * -std::sin(angle), std::cos(angle),   0.0f,        0.0f,
-    0.0f,                                 0.0f,             1.0f,      0.0f, 
-    0.0f,                                 0.0f,             0.0f,      1.0f,
-  }};
-  // NOLINTEND
-  // clang-format on
+  const ConstantBuffer cb = {
+      dx::XMMatrixTranspose(dx::XMMatrixRotationZ(angle) *
+                            dx::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
+                            dx::XMMatrixTranslation(x, y, 0.0f))};
 
   wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
   D3D11_BUFFER_DESC cbd;
