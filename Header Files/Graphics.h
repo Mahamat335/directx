@@ -1,13 +1,22 @@
 #pragma once
+#include "DxgiInfoManager.h"
 #include "FeatureException.h"
+#include "FeatureWin.h"
+#include <DirectXMath.h>
 #include <DxgiInfoManager.h>
 #include <FeatureWin.h>
 #include <d3d11.h>
+#include <d3dcompiler.h>
+#include <memory>
+#include <random>
 #include <vector>
 #include <wrl.h>
 #include <wrl/client.h>
 
+
 class Graphics {
+  friend class Bindable;
+
 public:
   class Exception : public FeatureException {
     using FeatureException::FeatureException;
@@ -54,10 +63,13 @@ public:
   Graphics &operator=(const Graphics &) = delete;
   ~Graphics() = default;
   void EndFrame();
-  void ClearBuffer(float r, float g, float b) noexcept;
-  void DrawTestTriangle(float angle, float x, float y);
+  void ClearBuffer(float red, float green, float blue) noexcept;
+  void DrawIndexed(UINT count) noexcept(!IS_DEBUG);
+  void SetProjection(DirectX::FXMMATRIX proj) noexcept;
+  DirectX::XMMATRIX GetProjection() const noexcept;
 
 private:
+  DirectX::XMMATRIX projection;
 #ifndef NDEBUG
   DxgiInfoManager infoManager;
 #endif

@@ -86,3 +86,8 @@ add_custom_command(TARGET app POST_BUILD
     ${CMAKE_SOURCE_DIR}/Resources
     $<TARGET_FILE_DIR:app>/Resources
 )
+
+target_compile_definitions(app PRIVATE
+    $<$<CONFIG:Debug>:IS_DEBUG=1>
+    $<$<NOT:$<CONFIG:Debug>>:IS_DEBUG=0>
+)
